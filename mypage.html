@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마이페이지 · MINIMAL</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  .mypage-wrap {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 40px;
+  }
+  .mypage-header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 20px;
+  }
+  .mypage-header h1 {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: -0.5px;
+  }
+  .mypage-header p {
+    font-size: 13px;
+    color: #999;
+    margin-top: 6px;
+  }
+  .mypage-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 40px;
+  }
+  .mypage-tab {
+    padding: 12px 24px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #999;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+  }
+  .mypage-tab.active {
+    color: #111;
+    border-bottom-color: #111;
+  }
+  .mypage-section { display: none; }
+  .mypage-section.active { display: block; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .form-group { margin-bottom: 20px; }
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 8px;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 1px solid #e8e8e8;
+    background: transparent;
+    font-size: 15px;
+    color: #111;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .form-group input:focus { border-bottom-color: #111; }
+  .btn-save {
+    padding: 14px 40px;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: inherit;
+    margin-top: 12px;
+  }
+  .btn-save:hover { opacity: 0.8; }
+
+  .alert {
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    display: none;
+  }
+  .alert.success { background: #f0fff4; color: #060; border: 1px solid #9f9; display: block; }
+  .alert.error   { background: #fff0f0; color: #c00; border: 1px solid #fcc; display: block; }
+
+  .order-empty, .wish-empty {
+    text-align: center;
+    padding: 60px 0;
+    color: #999;
+    font-size: 14px;
+  }
+
+  .order-card {
+    border: 1px solid #e8e8e8;
+    padding: 20px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .order-name { font-size: 14px; font-weight: 500; }
+  .order-date { font-size: 12px; color: #999; margin-top: 4px; }
+  .order-price { font-size: 15px; font-weight: 500; }
+  .order-status {
+    font-size: 11px;
+    padding: 3px 10px;
+    background: #f5f5f5;
+    color: #555;
+    letter-spacing: 1px;
+  }
+
+  .wish-card {
+    border: 1px solid #e8e8e8;
+    padding: 20px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .wish-name { font-size: 14px; font-weight: 500; }
+  .wish-price { font-size: 15px; }
+
+  .logout-btn {
+    background: none;
+    border: 1px solid #e8e8e8;
+    padding: 10px 24px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #999;
+    transition: all 0.2s;
+    font-family: inherit;
+    float: right;
+  }
+  .logout-btn:hover { border-color: #111; color: #111; }
+</style>
+</head>
+<body>
+
+<div class="banner">🎁 신규 가입 시 10% 할인 쿠폰 증정 &nbsp;·&nbsp; 5만원 이상 무료배송</div>
+
+<header>
+  <a href="/index.html" class="logo">MINIMAL</a>
+  <nav>
+    <a href="/shop/?orderby=date">신상품</a>
+    <a href="/product-category/clothing/">의류</a>
+    <a href="/product-category/bags/">가방</a>
+    <a href="/product-category/accessories/">액세서리</a>
+    <a href="/shop/?orderby=price">세일</a>
+  </nav>
+  <div class="header-icons">
+    <button onclick="location.href='/shop/'">🔍</button>
+    <button onclick="location.href='/mypage.html'">👤</button>
+    <div class="cart-wrap">
+      <button onclick="location.href='/cart/'">🛍️</button>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </div>
+  </div>
+</header>
+
+<div class="mypage-wrap">
+  <div class="mypage-header">
+    <h1>마이페이지</h1>
+    <p id="welcome-msg">안녕하세요!</p>
+    <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+  </div>
+
+  <div class="mypage-tabs">
+    <div class="mypage-tab active" onclick="switchTab('profile')">회원정보</div>
+    <div class="mypage-tab" onclick="switchTab('orders')">주문내역</div>
+    <div class="mypage-tab" onclick="switchTab('wishlist')">찜 목록</div>
+  </div>
+
+  <!-- 회원정보 -->
+  <div class="mypage-section active" id="tab-profile">
+    <div id="profile-alert" class="alert"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>아이디</label>
+        <input type="text" id="p-username" readonly style="color:#999;">
+      </div>
+      <div class="form-group">
+        <label>이메일</label>
+        <input type="email" id="p-email" readonly style="color:#999;">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>이름</label>
+        <input type="text" id="p-name" placeholder="이름을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label>전화번호</label>
+        <input type="tel" id="p-phone" placeholder="010-0000-0000">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>우편번호</label>
+      <input type="text" id="p-zipcode" placeholder="우편번호" style="max-width:200px;">
+    </div>
+    <div class="form-group">
+      <label>주소</label>
+      <input type="text" id="p-address" placeholder="기본 주소를 입력하세요">
+    </div>
+    <div class="form-group">
+      <label>상세 주소</label>
+      <input type="text" id="p-address-detail" placeholder="상세 주소를 입력하세요">
+    </div>
+    <button class="btn-save" onclick="saveProfile()">저장하기</button>
+  </div>
+
+  <!-- 주문내역 -->
+  <div class="mypage-section" id="tab-orders">
+    <div id="orders-list"></div>
+  </div>
+
+  <!-- 찜 목록 -->
+  <div class="mypage-section" id="tab-wishlist">
+    <div id="wishlist-list"></div>
+  </div>
+</div>
+
+<script>
+  async function checkLogin() {
+    const res = await fetch('/auth.php?action=check');
+    const data = await res.json();
+    if (!data.success) {
+      location.href = '/login.html';
+      return;
+    }
+    document.getElementById('welcome-msg').textContent = data.username + '님, 안녕하세요!';
+    loadProfile();
+  }
+
+  function switchTab(name) {
+    const tabs = ['profile', 'orders', 'wishlist'];
+    document.querySelectorAll('.mypage-tab').forEach((t, i) => {
+      t.classList.toggle('active', tabs[i] === name);
+    });
+    document.querySelectorAll('.mypage-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'orders') loadOrders();
+    if (name === 'wishlist') loadWishlist();
+  }
+
+  async function loadProfile() {
+    const res = await fetch('/auth.php?action=get_profile');
+    const data = await res.json();
+    if (!data.success) return;
+    const d = data.data;
+    document.getElementById('p-username').value       = d.username || '';
+    document.getElementById('p-email').value          = d.email || '';
+    document.getElementById('p-name').value           = d.name || '';
+    document.getElementById('p-phone').value          = d.phone || '';
+    document.getElementById('p-zipcode').value        = d.zipcode || '';
+    document.getElementById('p-address').value        = d.address || '';
+    document.getElementById('p-address-detail').value = d.address_detail || '';
+  }
+
+  async function saveProfile() {
+    const form = new FormData();
+    form.append('action', 'update_profile');
+    form.append('name',           document.getElementById('p-name').value);
+    form.append('phone',          document.getElementById('p-phone').value);
+    form.append('zipcode',        document.getElementById('p-zipcode').value);
+    form.append('address',        document.getElementById('p-address').value);
+    form.append('address_detail', document.getElementById('p-address-detail').value);
+
+    const res = await fetch('/auth.php', { method: 'POST', body: form });
+    const data = await res.json();
+    const alert = document.getElementById('profile-alert');
+    alert.className = 'alert ' + (data.success ? 'success' : 'error');
+    alert.textContent = data.message;
+    setTimeout(() => { alert.className = 'alert'; }, 3000);
+  }
+
+  async function loadOrders() {
+    const res = await fetch('/auth.php?action=get_orders');
+    const data = await res.json();
+    const el = document.getElementById('orders-list');
+    if (!data.data || data.data.length === 0) {
+      el.innerHTML = '<div class="order-empty">주문 내역이 없습니다.</div>';
+      return;
+    }
+    el.innerHTML = data.data.map(o => `
+      <div class="order-card">
+        <div>
+          <div class="order-name">${o.product_name}</div>
+          <div class="order-date">${o.created_at}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span class="order-status">${o.status}</span>
+          <span class="order-price">₩${Number(o.price).toLocaleString()}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function loadWishlist() {
+    const res = await fetch('/auth.php?action=get_wishlist');
+    const data = await res.json();
+    const el = document.getElementById('wishlist-list');
+    if (!data.data || data.data.length === 0) {
+      el.innerHTML = '<div class="wish-empty">찜한 상품이 없습니다.</div>';
+      return;
+    }
+    el.innerHTML = data.data.map(w => `
+      <div class="wish-card">
+        <div class="wish-name">${w.product_name}</div>
+        <div class="wish-price">₩${Number(w.price).toLocaleString()}</div>
+      </div>
+    `).join('');
+  }
+
+  async function doLogout() {
+    await fetch('/auth.php?action=logout');
+    location.href = '/index.html';
+  }
+
+  checkLogin();
+</script>
+</body>
+</html>
