@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$db_host = 'team601-mysql.team601.mysql.database.azure.com';
+$db_host = '10.10.34.119';
 $db_user = 'ijo';
 $db_pass = 'It12345@';
 $db_name = 'wordpress';
