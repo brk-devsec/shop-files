@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$db_host = '10.10.34.119';
+$db_host = '192.168.3.6';
 $db_user = 'ijo';
 $db_pass = 'It12345@';
 $db_name = 'wordpress';
